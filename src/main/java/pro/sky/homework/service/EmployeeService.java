@@ -16,4 +16,5 @@ public interface EmployeeService {
     Employee printMinSalaryName(int department);
     Employee printMaxSalaryName(int department);
     Map<String, List<Employee>> getAll(Integer departmentId);
+    void checkName(String firstName, String lastName);
 }

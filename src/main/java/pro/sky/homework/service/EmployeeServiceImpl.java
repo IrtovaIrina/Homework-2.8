@@ -1,12 +1,11 @@
 package pro.sky.homework.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import pro.sky.homework.Employee;
-import pro.sky.homework.exeption.EmployeeAlreadyAddedException;
-import pro.sky.homework.exeption.EmployeeDepartmentException;
-import pro.sky.homework.exeption.EmployeeNotFoundException;
-import pro.sky.homework.exeption.EmployeeStorageIsFullException;
+import pro.sky.homework.exeption.*;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -84,7 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .get();
     }
 
-    @Override
+    @GetMapping
     public Map<String, List<Employee>> getAll(Integer departmentId) {
         return employeesList.stream()
                 .filter(employee -> departmentId == null || employee.getDepartment() == departmentId)
@@ -92,6 +91,19 @@ public class EmployeeServiceImpl implements EmployeeService{
                         employee -> Objects.toString(employee.getDepartment()),
                         Collectors.mapping(e -> e, Collectors.toList()))
                 );
+    }
+    @GetMapping
+    public void checkName(String firstName, String lastName){
+        if (StringUtils.isEmpty(firstName) || StringUtils.isEmpty(lastName)){
+            throw new EmployeeNameException("Имя или фамилия не заполнены");
+        }
+        if(!StringUtils.capitalize(StringUtils.lowerCase(firstName)).equals(firstName)
+           || !StringUtils.capitalize(StringUtils.lowerCase(lastName)).equals(lastName)) {
+            throw new EmployeeNameException("Имя и Фамилия должны быть с большой буквы");
+        }
+        if (!StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)){
+            throw new EmployeeNameException("Имя и Фамилия должны состоять из букв");
+        }
     }
 }
 

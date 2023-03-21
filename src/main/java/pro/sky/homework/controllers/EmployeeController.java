@@ -1,11 +1,10 @@
 package pro.sky.homework.controllers;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.homework.Employee;
+import pro.sky.homework.exeption.EmployeeNameException;
 import pro.sky.homework.service.EmployeeService;
 import java.util.Collection;
 import java.util.List;
@@ -19,15 +18,24 @@ public class EmployeeController {
     public EmployeeController(EmployeeService employeeService){
         this.employeeService = employeeService;
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmployeeNameException.class)
+    public String handleException(EmployeeNameException e) {
+        return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
 
     @GetMapping("/employee/add")
     public Employee add(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName
             ,@RequestParam("salary") int salary, @RequestParam("department") int department) {
+        employeeService.checkName(firstName,lastName);
         return employeeService.addEmployee(firstName,lastName,salary,department);
+
+
     }
     @GetMapping("/employee/remove")
     public Employee remove(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName
             , @RequestParam("salary") int salary, @RequestParam("department") int department) {
+        employeeService.checkName(firstName,lastName);
         return employeeService.removeEmployee(firstName,lastName,salary, department);
     }
     @GetMapping("/employee/contains")
