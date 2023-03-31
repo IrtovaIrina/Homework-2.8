@@ -1,11 +1,14 @@
 package pro.sky.homework.controllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.homework.Employee;
 import pro.sky.homework.exeption.EmployeeNameException;
 import pro.sky.homework.service.EmployeeService;
+import pro.sky.homework.service.EmployeeServiceImpl;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +17,13 @@ import java.util.Map;
 @RestController
 @RequestMapping
 public class EmployeeController {
+
     private final EmployeeService employeeService;
-    public EmployeeController(EmployeeService employeeService){
+
+    @Autowired
+    public EmployeeController(EmployeeServiceImpl employeeService) {
         this.employeeService = employeeService;
     }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmployeeNameException.class)
     public String handleException(EmployeeNameException e) {
         return String.format("%s %s", HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -43,21 +48,5 @@ public class EmployeeController {
             ,@RequestParam("salary") int salary, @RequestParam("department") int department) {
         return employeeService.containsEmployee(firstName,lastName,salary,department);
     }
-    @GetMapping("/departments/max-salary")
-    public Employee maxSalary(@RequestParam("departmentId") String departmentId){
-        return employeeService.printMaxSalaryName(Integer.parseInt(departmentId));
-    }
-    @GetMapping("/departments/min-salary")
-    public Employee minSalary(@RequestParam("departmentId") String departmentId){
-        return employeeService.printMinSalaryName(Integer.parseInt(departmentId));
-    }
-    @GetMapping("/departments/all")
-    public Map<String, List<Employee>> allByDepartmentId(@RequestParam(required = false) Integer departmentId) {
-        return employeeService.getAll(departmentId);
-    }
 
-    @GetMapping
-    public Collection <Employee> allEmployees(){
-        return employeeService.returnEmployees();
-    }
 }

@@ -11,99 +11,69 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
-    private final Map<String, Employee> employees ;
     private static List<Employee> employeesList = new ArrayList<>();
 
     public EmployeeServiceImpl() {
-        this.employees = new HashMap<>();
-        this.employeesList = new ArrayList<>();
+        employeesList = new ArrayList<>();
     }
 
-    @GetMapping
+    @Override
     public Employee addEmployee(String firstName,String lastName, int salary, int department)  {
         Employee employee = new Employee( firstName,lastName,salary,department);
         checkEmployee(employee);
-        employees.put(employee.getFullName(),employee);
         employeesList.add(employee);
         return employee;
     }
-    @GetMapping
+    @Override
     public Employee removeEmployee(String firstName,String lastName, int salary, int department)  {
         Employee employee = new Employee( firstName, lastName, salary, department);
         checkEmployeeExistence(employee);
-        employees.remove(employee.getFullName());
         employeesList.remove(employee);
         return employee;
 
     }
-    @GetMapping
+    @Override
     public Employee containsEmployee(String firstName,String lastName, int salary, int department){
         Employee employee = new Employee( firstName, lastName,salary,department);
         checkEmployeeExistence(employee);
-        employees.containsKey(employee.getFullName());
         employeesList.contains(employee);
         return employee;
     }
-    @GetMapping
+    @Override
     public void checkEmployeeExistence(Employee employee) {
-        if (!employees.containsKey(employee.getFullName())){
+        if (!employeesList.contains(employee.getFullName())){
             throw new EmployeeNotFoundException();
         }
     }
-    @GetMapping
+    @Override
     public void checkEmployee(Employee employee) {
-        if (employees.size() > 10){
+        if (employeesList.size() > 10){
             throw new EmployeeStorageIsFullException();
         }
-        if (employees.containsKey(employee.getFullName())){
+        if (employeesList.contains(employee.getFullName())){
             throw new EmployeeAlreadyAddedException();
         }
         if (employee.getDepartment() < 1 || employee.getDepartment() > 5){
             throw new EmployeeDepartmentException();
         }
     }
-    @GetMapping
+    @Override
     public Collection<Employee> returnEmployees() {
         return employeesList;
     }
-
-    @GetMapping
-    public Employee printMinSalaryName(int department){
-        return employeesList.stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .min(Comparator.comparing(Employee::getSalary)).get();
-
-    }
-
-    @GetMapping
-    public Employee printMaxSalaryName(int department){
-        return employeesList.stream()
-                .filter(employee -> employee.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .get();
-    }
-
-    @GetMapping
-    public Map<String, List<Employee>> getAll(Integer departmentId) {
-        return employeesList.stream()
-                .filter(employee -> departmentId == null || employee.getDepartment() == departmentId)
-                .collect(Collectors.groupingBy(
-                        employee -> Objects.toString(employee.getDepartment()),
-                        Collectors.mapping(e -> e, Collectors.toList()))
-                );
-    }
-    @GetMapping
+    @Override
     public void checkName(String firstName, String lastName){
         if (StringUtils.isEmpty(firstName) || StringUtils.isEmpty(lastName)){
             throw new EmployeeNameException("Имя или фамилия не заполнены");
         }
         if(!StringUtils.capitalize(StringUtils.lowerCase(firstName)).equals(firstName)
-           || !StringUtils.capitalize(StringUtils.lowerCase(lastName)).equals(lastName)) {
+                || !StringUtils.capitalize(StringUtils.lowerCase(lastName)).equals(lastName)) {
             throw new EmployeeNameException("Имя и Фамилия должны быть с большой буквы");
         }
         if (!StringUtils.isAlpha(firstName) || !StringUtils.isAlpha(lastName)){
             throw new EmployeeNameException("Имя и Фамилия должны состоять из букв");
         }
     }
+
 }
 
