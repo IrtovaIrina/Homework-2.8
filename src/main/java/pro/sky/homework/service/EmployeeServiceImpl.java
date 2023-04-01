@@ -28,9 +28,13 @@ public class EmployeeServiceImpl implements EmployeeService{
     public Employee removeEmployee(String firstName,String lastName, int salary, int department)  {
         Employee employee = new Employee( firstName, lastName, salary, department);
         checkEmployeeExistence(employee);
-        employeesList.remove(employee);
+        for (Employee e : employeesList) {
+            if (Objects.equals(e.getFullName(),employee.getFullName())) {
+                employeesList.remove(e);
+                return e;
+            }
+        }
         return employee;
-
     }
     @Override
     public Employee containsEmployee(String firstName,String lastName, int salary, int department){
@@ -38,6 +42,10 @@ public class EmployeeServiceImpl implements EmployeeService{
         checkEmployeeExistence(employee);
         employeesList.contains(employee);
         return employee;
+    }
+    @Override
+    public Collection<Employee> returnEmployees() {
+        return employeesList;
     }
     @Override
     public void checkEmployeeExistence(Employee employee) {
@@ -57,10 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService{
             throw new EmployeeDepartmentException();
         }
     }
-    @Override
-    public Collection<Employee> returnEmployees() {
-        return employeesList;
-    }
+
     @Override
     public void checkName(String firstName, String lastName){
         if (StringUtils.isEmpty(firstName) || StringUtils.isEmpty(lastName)){
