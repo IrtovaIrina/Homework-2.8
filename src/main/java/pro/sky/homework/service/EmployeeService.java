@@ -10,12 +10,11 @@ import java.util.Map;
 
 public interface EmployeeService {
 
-    Employee addEmployee(String firstName,String lastName, int salary, int department);
-    Employee removeEmployee(String firstName,String lastName, int salary, int department);
-    Employee containsEmployee(String firstName,String lastName, int salary, int department);
-    void checkEmployeeExistence(Employee employee);
-    void checkEmployee(Employee employee);
-    Collection<Employee> returnEmployees();
-    void checkName(String firstName, String lastName);
+    Employee addEmployee(String firstName, String lastName, int salary, int departmentId);
 
+    Employee containsEmployee(String firstName, String lastName);
+
+    Employee removeEmployee(String firstName, String lastName);
+
+    List<Employee> returnEmployees();
 }

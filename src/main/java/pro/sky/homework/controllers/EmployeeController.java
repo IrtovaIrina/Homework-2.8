@@ -9,10 +9,6 @@ import pro.sky.homework.exeption.EmployeeNameException;
 import pro.sky.homework.service.EmployeeService;
 import pro.sky.homework.service.EmployeeServiceImpl;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 
 @RestController
 @RequestMapping
@@ -32,21 +28,17 @@ public class EmployeeController {
     @GetMapping("/employee/add")
     public Employee add(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName
             ,@RequestParam("salary") int salary, @RequestParam("department") int department) {
-        employeeService.checkName(firstName,lastName);
         return employeeService.addEmployee(firstName,lastName,salary,department);
 
 
     }
     @GetMapping("/employee/remove")
-    public Employee remove(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName
-            , @RequestParam("salary") int salary, @RequestParam("department") int department) {
-        employeeService.checkName(firstName,lastName);
-        return employeeService.removeEmployee(firstName,lastName,salary, department);
+    public Employee remove(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        return employeeService.removeEmployee(firstName,lastName);
     }
     @GetMapping("/employee/contains")
-    public Employee contains(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName
-            ,@RequestParam("salary") int salary, @RequestParam("department") int department) {
-        return employeeService.containsEmployee(firstName,lastName,salary,department);
+    public Employee contains(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        return employeeService.containsEmployee(firstName,lastName);
     }
 
 }
